@@ -29,3 +29,18 @@ describe('generateComponentSchema', () => {
     assert.equal(parsed.component, 'button');
   });
 });
+
+describe('schema rejection', () => {
+  it('rejects an invalid framework', () => {
+    assert.throws(() => setupProjectSchema.parse({ framework: 'svelte' }));
+  });
+
+  it('rejects an invalid tailwind version and empty importPath', () => {
+    assert.throws(() => setupProjectSchema.parse({ framework: 'react', tailwindVersion: 'v2' }));
+    assert.throws(() => generateTailwindConfigSchema.parse({ version: 'v3', importPath: '' }));
+  });
+
+  it('rejects an invalid component kind', () => {
+    assert.throws(() => generateComponentSchema.parse({ framework: 'vue', component: 'modal' }));
+  });
+});
