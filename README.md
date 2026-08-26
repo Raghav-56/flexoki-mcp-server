@@ -166,6 +166,22 @@ npm test
 npm publish --access public
 ```
 
+## Usage
+
+Run it directly without cloning:
+
+```bash
+npx -y @raghav-56/flexoki-mcp-server
+```
+
+Once your client is connected, ask for what you need in natural language:
+
+- "Set up Flexoki for my Next.js app using Tailwind v4."
+- "Generate a Tailwind v3 config using flexoki-theme.js."
+- "Generate a Vue card component with Flexoki semantic tokens."
+
+Tools can also be called programmatically over STDIO JSON-RPC using the MCP SDK (`tools/call` with `name` and `arguments`).
+
 ## Example interactions
 
 - "Set up Flexoki for my Next.js app using Tailwind v4."
