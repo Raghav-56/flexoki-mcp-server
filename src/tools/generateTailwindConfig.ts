@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import { generateTailwindConfig } from '../utils/codegen.js';
-import { generateTailwindConfigSchema } from '../utils/validation.js';
+import { parseToolInput, generateTailwindConfigSchema } from '../utils/validation.js';
 
 export function registerGenerateTailwindConfigTool(server: McpServer): void {
   server.registerTool(
@@ -13,7 +13,11 @@ export function registerGenerateTailwindConfigTool(server: McpServer): void {
       inputSchema: generateTailwindConfigSchema,
     },
     async (rawInput) => {
-      const input = generateTailwindConfigSchema.parse(rawInput);
+      const parsed = parseToolInput(generateTailwindConfigSchema, rawInput);
+      if (!parsed.ok) {
+        return parsed.error;
+      }
+      const input = parsed.data;
       const configText = generateTailwindConfig({
         version: input.version,
         importPath: input.importPath,

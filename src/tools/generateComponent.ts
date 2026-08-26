@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import { generateComponent } from '../utils/codegen.js';
-import { generateComponentSchema } from '../utils/validation.js';
+import { parseToolInput, generateComponentSchema } from '../utils/validation.js';
 
 function inferLanguage(framework: 'react' | 'next' | 'vue' | 'static'): string {
   if (framework === 'vue') return 'vue';
@@ -19,7 +19,11 @@ export function registerGenerateComponentTool(server: McpServer): void {
       inputSchema: generateComponentSchema,
     },
     async (rawInput) => {
-      const input = generateComponentSchema.parse(rawInput);
+      const parsed = parseToolInput(generateComponentSchema, rawInput);
+      if (!parsed.ok) {
+        return parsed.error;
+      }
+      const input = parsed.data;
       const source = generateComponent(input);
       const language = inferLanguage(input.framework);
 

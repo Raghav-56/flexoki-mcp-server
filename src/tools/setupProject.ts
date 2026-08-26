@@ -2,7 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 import { generateSetupProject } from '../utils/codegen.js';
 import { filesToMarkdown } from '../utils/formatting.js';
-import { setupProjectSchema } from '../utils/validation.js';
+import { parseToolInput, setupProjectSchema } from '../utils/validation.js';
 
 export function registerSetupProjectTool(server: McpServer): void {
   server.registerTool(
@@ -14,7 +14,11 @@ export function registerSetupProjectTool(server: McpServer): void {
       inputSchema: setupProjectSchema,
     },
     async (rawInput) => {
-      const input = setupProjectSchema.parse(rawInput);
+      const parsed = parseToolInput(setupProjectSchema, rawInput);
+      if (!parsed.ok) {
+        return parsed.error;
+      }
+      const input = parsed.data;
       const result = generateSetupProject(input);
 
       const blocks = [
